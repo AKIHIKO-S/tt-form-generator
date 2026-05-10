@@ -24,10 +24,10 @@
     "tailwindcss": "^3.4.14",
     "vite": "^5.4.10"
   },
-  "homepage": "https://YOUR_GITHUB_USERNAME.github.io/tt-form-generator/",
+  "homepage": "https://AKIHIKO-S.github.io/tt-form-generator/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/YOUR_GITHUB_USERNAME/tt-form-generator.git"
+    "url": "https://github.com/AKIHIKO-S/tt-form-generator.git"
   },
   "keywords": ["table-tennis", "tournament", "form-generator", "google-apps-script", "japan"],
   "license": "MIT"
