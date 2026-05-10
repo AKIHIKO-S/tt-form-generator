@@ -1,185 +1,90 @@
-# 🏓 卓球大会 申込フォーム生成ツール
+# 🏓 卓球大会 申込フォーム
 
-エクセル集計表を、**Webフォーム + Googleスプレッドシート自動集計 + 領収書発行** に置き換える生成ツールです。
+釧路卓球協会の年間16大会（2025年度版）の **申込フォーム** をブラウザで完結させるツールです。
 
-設問に答えるだけで、申込フォーム（HTML）と Google Apps Script（GAS）が一括生成されます。
+団体管理者はスマートフォンで一問一答形式のウィザードに回答するだけで、申込が主催者のGoogleスプレッドシートへ自動集計されます。
 
-[![Deploy](https://github.com/YOUR_USERNAME/tt-form-generator/actions/workflows/deploy.yml/badge.svg)](https://github.com/YOUR_USERNAME/tt-form-generator/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## 🌐 デモ・公開URL
+## 🌐 公開URL
 
-👉 **[https://YOUR_USERNAME.github.io/tt-form-generator/](https://YOUR_USERNAME.github.io/tt-form-generator/)**
+👉 **[https://akihiko-s.github.io/tt-form-generator/](https://akihiko-s.github.io/tt-form-generator/)**
+
+各大会の直接URL: `?t=<大会ID>` を末尾に付与
+（例: `?t=yasaka` = ヤサカ杯）
+
+主催者向け管理画面: `?admin=1`
 
 ---
 
-## ✨ 主な機能
+## 📦 内蔵大会テンプレート（16大会）
 
-### 🎯 3つの大会テンプレート内蔵
-
-| テンプレート | 構成 |
+| 大会 | ID |
 |---|---|
-| 🏆 **会長杯/高校釧根支部オープン** | 14カテゴリ（団体3部×男女＋シングルス4部×男女） |
-| 🏃 **国スポ予選（少年の部）** | シングルス男女2区分・500円固定 |
-| 🏓 **ヤサカ杯** | シングルス8区分＋ダブルス7区分（ミックス含む） |
+| 第6回まりもオープン IN Akan（ラージボール） | `marimo` |
+| 会長杯／高校釧根支部オープン | `kaichohai` |
+| 国スポ予選（少年の部） | `kokusupo` |
+| 第51回ヤサカ杯 | `yasaka` |
+| 第54回くしろリーグ | `league54` |
+| 釧路選手権（ニッタク杯） | `nittaku` |
+| 北海道選手権（カデットの部） | `hokkaido_cadet` |
+| 釧路ジュニア選手権 | `junior` |
+| 第18回なごやか亭杯 | `nagoyaka` |
+| 第4回タンチョウオープン（ラージ） | `tancho` |
+| 中学選抜（団体戦） | `chugaku_senbatsu` |
+| 中学新人戦（個人戦） | `chugaku_shinjin` |
+| 第55回くしろリーグ | `league55` |
+| 第45回湿原の風オープン | `shitsugen` |
+| ダブルスチームカップ | `doubles_team` |
+| ホープス・カブ・バンビ | `hopes` |
 
-### 📋 自動生成されるシステム
-
-- **Webフォーム HTML** — Jimdo・WordPressなどに貼付け可能
-- **Google Apps Script** — スプレッドシートに貼付けるだけで動作
-
-### 🤖 GAS の自動運営機能
-
-- 📥 **申込データ受信** — フォーム送信を自動保存
-- 📊 **集計表自動生成** — エクセルの「団体名 × 種目」クロス集計を再現
-- 📝 **選手名簿自動生成** — 全選手を一覧化
-- 🔍 **重複チェック** — 同一選手の複数登録を検出
-- 🧾 **領収書一括作成** — チームごとに自動集計して発行
-- 📝 **任意領収書発行** — 金額・宛名を自由入力で発行
-- ✉️ **確認メール送信** — 申込者へ自動返信
-
----
-
-## 🚀 自分のGitHubで公開する手順
-
-### Step 1: このリポジトリを Use this template
-
-1. GitHubで `Use this template` をクリック
-2. 自分のリポジトリ名を `tt-form-generator` で作成
-
-### Step 2: GitHub Pages を有効化
-
-1. リポジトリの **Settings** → **Pages**
-2. **Source** を `GitHub Actions` に設定
-
-### Step 3: 設定を書き換え
-
-`vite.config.js` の `base` を、自分のリポジトリ名に変更：
-
-```js
-base: process.env.GITHUB_PAGES === 'true' ? '/your-repo-name/' : '/',
-```
-
-`package.json` の `homepage` も書き換え：
-
-```json
-"homepage": "https://your-username.github.io/your-repo-name/"
-```
-
-### Step 4: プッシュ
-
-`main` ブランチに push すると、自動で GitHub Pages にデプロイされます。
+各大会ごとに 種目・区分・参加料 が定義済み。
 
 ---
 
-## 💻 ローカル開発
+## 🚀 機能
+
+- **ウィザード形式の申込フォーム**（スマホ最適化）
+- **URLで大会指定可能**（`?t=<id>`）
+- **iframe埋め込み対応**（既存サイトに貼り付け可）
+- **Google Apps Script → Googleスプレッドシート自動集計**
+- **GAS未設定時はメーラー起動（mailto）にフォールバック**
+- **主催者向け管理画面**（埋め込みコード一覧）
+
+---
+
+## ⚙️ セットアップ
+
+詳しくは [docs/SETUP.md](docs/SETUP.md) を参照。
+
+ざっくり3ステップ:
+
+1. **Google Apps Script を1回だけデプロイ**
+   - `gas/Code.gs` をGoogleスプレッドシートに貼り付け → ウェブアプリとしてデプロイ → URLを取得
+2. **`src/config.js` の `GAS_ENDPOINT` にURLを貼り付け**
+3. **`npm run build` → `git push`** → GitHub Pagesに反映
+
+GASを使わない場合は、`src/config.js` の `FALLBACK_EMAIL` だけ設定すればメーラー経由で受信できます。
+
+---
+
+## 🛠 ローカル開発
 
 ```bash
-# クローン
-git clone https://github.com/YOUR_USERNAME/tt-form-generator.git
-cd tt-form-generator
-
-# 依存関係インストール
 npm install
-
-# 開発サーバー起動
 npm run dev
-# → http://localhost:5173 でアクセス
+```
 
-# 本番ビルド
-npm run build
+http://localhost:5173 で開発サーバが起動。
 
-# ビルドプレビュー
-npm run preview
+ビルド:
+```bash
+npm run build      # dist/ に成果物
+npm run preview    # ビルド結果をローカルで確認
 ```
 
 ---
 
-## 🛠️ 生成されたフォームの設置
+## 📝 ライセンス
 
-1. **ツールでHTMLとGASコードを生成** → ダウンロード
-2. **Googleスプレッドシート**を新規作成
-3. **拡張機能 → Apps Script** に GASコードを貼付け
-4. `initializeSystem()` を実行（初回のみ・権限承認が必要）
-5. **デプロイ → ウェブアプリ** で URL を発行
-6. ダウンロードした `form.html` の `YOUR_GAS_WEB_APP_URL_HERE` を発行URLに置換
-7. WebサイトのHTMLウィジェットに `form.html` の内容を貼付け
-
-詳細は生成ツール内の「設置手順」タブをご覧ください。
-
----
-
-## 📂 プロジェクト構成
-
-```
-tt-form-generator/
-├── src/
-│   ├── App.jsx          # メインコンポーネント
-│   ├── main.jsx
-│   └── index.css
-├── public/              # 静的ファイル
-├── .github/workflows/
-│   └── deploy.yml       # GitHub Pages 自動デプロイ
-├── docs/                # ドキュメント
-├── index.html
-├── vite.config.js
-├── tailwind.config.js
-└── package.json
-```
-
----
-
-## 🎨 カスタマイズ
-
-### テンプレートを追加する
-
-`src/App.jsx` の `TEMPLATES` オブジェクトに、新しいテンプレートを追加できます：
-
-```jsx
-const TEMPLATES = {
-  // ...既存テンプレート
-
-  myTemplate: {
-    name: '自分の大会',
-    description: '説明',
-    config: {
-      title: '大会名',
-      organizer: '主催団体',
-      // ...
-    },
-    categories: [
-      { id: 1, type: 'singles', division: '一般', gender: 'male', fee: 1000, enabled: true },
-      // ...
-    ]
-  }
-};
-```
-
-### テーマカラーを追加する
-
-`themes` オブジェクトにエントリを追加：
-
-```jsx
-const themes = {
-  // ...
-  myTheme: { primary: '...', secondary: '...', accent: '...', name: 'My Theme' }
-};
-```
-
----
-
-## 🛡️ ライセンス
-
-MIT License
-
----
-
-## 🙏 謝辞
-
-このツールは [釧路卓球協会](https://kushiro-tta.example.com/) の運営DXのために開発されました。
-
-ご意見・改善要望は [Issues](https://github.com/YOUR_USERNAME/tt-form-generator/issues) へお願いします。
-
----
-
-Made with ❤️ for tournament organizers in Japan.
+MIT
