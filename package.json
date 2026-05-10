@@ -12,7 +12,8 @@
   "dependencies": {
     "lucide-react": "^0.453.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/react": "^18.3.12",
@@ -29,6 +30,12 @@
     "type": "git",
     "url": "https://github.com/AKIHIKO-S/tt-form-generator.git"
   },
-  "keywords": ["table-tennis", "tournament", "form-generator", "google-apps-script", "japan"],
+  "keywords": [
+    "table-tennis",
+    "tournament",
+    "form-generator",
+    "google-apps-script",
+    "japan"
+  ],
   "license": "MIT"
 }
