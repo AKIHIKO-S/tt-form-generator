@@ -1,0 +1,34 @@
+{
+  "name": "tt-form-generator",
+  "version": "2.0.0",
+  "description": "卓球大会 申込フォーム生成ツール - エクセル集計表をWebフォーム＋自動集計＋領収書発行に置き換え",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy": "npm run build && gh-pages -d dist"
+  },
+  "dependencies": {
+    "lucide-react": "^0.453.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "autoprefixer": "^10.4.20",
+    "gh-pages": "^6.2.0",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.14",
+    "vite": "^5.4.10"
+  },
+  "homepage": "https://YOUR_GITHUB_USERNAME.github.io/tt-form-generator/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_GITHUB_USERNAME/tt-form-generator.git"
+  },
+  "keywords": ["table-tennis", "tournament", "form-generator", "google-apps-script", "japan"],
+  "license": "MIT"
+}
