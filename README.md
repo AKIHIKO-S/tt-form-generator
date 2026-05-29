@@ -83,6 +83,14 @@ npm run build      # dist/ に成果物
 npm run preview    # ビルド結果をローカルで確認
 ```
 
+テスト（[Vitest](https://vitest.dev/)）:
+```bash
+npm test           # 参加料計算・行生成・大会データ整合性をチェック
+npm run test:watch # 変更を監視して再実行
+```
+
+テスト対象は `src/**/*.test.js`。プッシュ／プルリクエスト時に GitHub Actions（`.github/workflows/test.yml`）でも自動実行されます。
+
 ---
 
 ## 📝 ライセンス
