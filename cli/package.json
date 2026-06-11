@@ -1,0 +1,33 @@
+{
+  "name": "@kushiro-tt/cli",
+  "version": "0.1.0",
+  "description": "釧路卓球協会 内部データへの CLI / MCP 共有入口（Cloudflare Access 認証）",
+  "type": "module",
+  "bin": {
+    "kushiro-tt": "./dist/index.js"
+  },
+  "files": ["dist"],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AKIHIKO-S/tt-form-generator.git"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "node --loader tsx src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsup": "^8.3.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "vitest": "~2.1.0"
+  }
+}

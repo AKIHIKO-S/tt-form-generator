@@ -1,0 +1,44 @@
+name = "tt-data-api"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+# ───────────────────────────────────────────────────────────
+# カスタムドメイン（Access を被せるために必須）
+#   *.workers.dev には Cloudflare Access を適用できないため、自分の
+#   Cloudflare アカウントに追加済みのゾーン配下のホスト名を割り当てる。
+#   この hostname を Access の Self-hosted Application で保護する。
+#   手順は docs/DEPLOY.md を参照。
+# ───────────────────────────────────────────────────────────
+# routes = [
+#   { pattern = "tt-api.example.com", custom_domain = true }
+# ]
+
+# ───────────────────────────────────────────────────────────
+# Cloudflare Access（IdP 認証）の検証用パラメータ
+#   - ACCESS_TEAM_DOMAIN: チームドメイン（issuer の元になる）
+#       例: kushiro-tt.cloudflareaccess.com
+#   - ACCESS_AUD: 保護対象アプリ固有の Application Audience (AUD) 値
+#       Cloudflare Zero Trust > Access > Applications で確認できる
+# どちらも秘密情報ではない（公開鍵は JWKS から都度取得する）。
+# ───────────────────────────────────────────────────────────
+[vars]
+ACCESS_TEAM_DOMAIN = "kushiro-tt.cloudflareaccess.com"
+ACCESS_AUD = "REPLACE_WITH_YOUR_APPLICATION_AUD"
+
+# ローカル開発でのみ true。本番には絶対に持ち込まない。
+# true のとき Access 検証をスキップし、ダミーの身元で動く。
+DEV_BYPASS = "false"
+
+# D1 データベース（業務データの正本）
+[[d1_databases]]
+binding = "DB"
+database_name = "tt-data"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+
+# ───────────────────────────────────────────────────────────
+# 取込（ingest）エンドポイント用の HMAC 署名鍵。
+# GAS / フォームからの Webhook を Access の Bypass ポリシー対象にし、
+# 署名で正当性を担保する（IdP ログインできない経路の扱い）。
+#   wrangler secret put INGEST_HMAC_SECRET で設定する。
+# ───────────────────────────────────────────────────────────

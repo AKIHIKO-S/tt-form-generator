@@ -1,0 +1,9 @@
+# CLI を GitHub Packages から取得するための設定例。
+# トークンそのものは書かず、環境変数を参照する記法だけを書く。
+# （GitHub CLI のログインからその都度取り出す想定）
+#
+#   export NODE_AUTH_TOKEN=$(gh auth token)
+#   npm install -g @kushiro-tt/cli
+#
+@kushiro-tt:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
