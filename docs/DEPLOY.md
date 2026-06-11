@@ -25,14 +25,25 @@ Access（IdP 認証）で保護するまでの手順です。完了すると、�
 
 ---
 
-## ステップ1: IdP を Zero Trust に連携
+## ステップ1: 認証方式を用意（IdP または One-time PIN）
 
-1. Cloudflare Zero Trust ダッシュボード > **Settings > Authentication** を開く。
-2. **Login methods > Add new** で IdP（例: Google / Google Workspace）を追加し、
-   案内に従って OAuth を設定する。
-3. **Test** で正常にログインできることを確認する。
+「誰が役員か」の判断をここで決める。小規模なら **One-time PIN** が最も手軽。
 
-このあとの「誰が役員か」の判断はすべてこの IdP に委ねられる。
+### 方式A: One-time PIN（外部IdP不要・推奨）
+許可したメールアドレス宛にワンタイムコードを送るだけ。Gmail でも可で、Workspace
+契約も OAuth 設定も不要。
+
+1. Zero Trust > **Settings > Authentication > Login methods**。
+2. **One-time PIN** が既定で有効になっていることを確認する（無ければ Add で追加）。
+3. 許可するアドレスはステップ4 の Access ポリシーで指定する（ここでは設定不要）。
+
+### 方式B: 外部 IdP（Google Workspace 等）
+ドメイン単位で許可したい、既存の IdP に寄せたい場合。
+
+1. Zero Trust > **Settings > Authentication > Login methods > Add new**。
+2. IdP（例: Google）を追加し OAuth を設定 → **Test** で確認。
+
+このあとの本人確認はすべてこの方式に委ねられる。
 
 ---
 
