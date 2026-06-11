@@ -10,7 +10,7 @@
     "db:init": "wrangler d1 execute tt-data --local --file=./schema.sql",
     "db:init:remote": "wrangler d1 execute tt-data --remote --file=./schema.sql",
     "db:seed": "wrangler d1 execute tt-data --local --file=./seed.sql",
-    "demo": "npm run db:init && npm run db:seed && wrangler dev --local --port 8787 --var DEV_BYPASS:true --var INGEST_HMAC_SECRET:demo-secret",
+    "demo": "node scripts/demo.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
