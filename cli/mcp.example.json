@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "kushiro-tt": {
+      "command": "kushiro-tt",
+      "args": ["mcp"],
+      "env": {
+        "TT_API_URL": "https://tt-data-api.kushiro-tt.workers.dev"
+      }
+    }
+  }
+}

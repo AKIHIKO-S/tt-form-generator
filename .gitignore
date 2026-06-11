@@ -12,3 +12,7 @@ dist-ssr
 *.swp
 *.log
 .cache
+
+# Cloudflare Workers local state
+.wrangler
+.dev.vars

@@ -85,6 +85,15 @@ npm run preview    # ビルド結果をローカルで確認
 
 ---
 
+## 🔒 役員向け 内部データAPI（CLI / MCP）
+
+申込データを **人間も AI も同じ IdP 認証で** 参照するための内部API基盤（プロト）を
+`api/`・`cli/` に同梱しています。API キーを配布せず、Cloudflare Access（IdP）で
+API を保護し、その認証を CLI と MCP で共有します。公開の申込フォームは従来どおり
+誰でも利用できます。
+
+詳細は [docs/IDP_API.md](docs/IDP_API.md) を参照。
+
 ## 📝 ライセンス
 
 MIT

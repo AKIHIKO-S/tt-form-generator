@@ -1,0 +1,46 @@
+name: Publish CLI
+
+# バージョンタグの push を契機に、CLI を GitHub Packages（npm レジストリ）へ
+# 非公開 publish する。publish の認証は自動発行の GITHUB_TOKEN のみで行い、
+# 長期有効な API トークンを secret に保管しない。
+
+on:
+  push:
+    tags:
+      - 'cli-v*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write # write:packages のみに絞る
+    defaults:
+      run:
+        working-directory: cli
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://npm.pkg.github.com
+          scope: '@kushiro-tt'
+
+      - name: タグとパッケージのバージョン一致を検証
+        run: |
+          TAG="${GITHUB_REF_NAME#cli-v}"
+          PKG=$(node -p "require('./package.json').version")
+          if [ "$TAG" != "$PKG" ]; then
+            echo "tag($TAG) と package.json($PKG) のバージョンが不一致" >&2
+            exit 1
+          fi
+
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run build
+
+      - name: publish（二重 publish は npm が拒否）
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
