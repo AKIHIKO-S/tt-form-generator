@@ -55,6 +55,40 @@ const TOOLS = [
       additionalProperties: false,
     },
   },
+  {
+    name: 'get_annual_summary',
+    description:
+      '年間（期間）集計を返す。大会別・団体別の申込件数と参加料合計。year は年度（4月〜翌3月）。',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        year: { type: 'number', description: '年度（例: 2025 = 2025年度）' },
+        from: { type: 'string', description: '開始日 ISO（例: 2025-04-01）' },
+        to: { type: 'string', description: '終了日 ISO（exclusive）' },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
+    name: 'list_teams',
+    description: '団体の一覧を返す（各団体の申込件数・合計参加料つき）。',
+    inputSchema: { type: 'object', properties: {}, additionalProperties: false },
+  },
+  {
+    name: 'get_team',
+    description: '特定団体の申込を全大会横断で返す。期間で絞り込み可。',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        name: { type: 'string', description: '団体名' },
+        year: { type: 'number', description: '年度（例: 2025）' },
+        from: { type: 'string', description: '開始日 ISO' },
+        to: { type: 'string', description: '終了日 ISO（exclusive）' },
+      },
+      required: ['name'],
+      additionalProperties: false,
+    },
+  },
 ] as const;
 
 async function dispatch(name: string, args: Record<string, any>): Promise<unknown> {
@@ -67,6 +101,12 @@ async function dispatch(name: string, args: Record<string, any>): Promise<unknow
       return api.submission(Number(args.id));
     case 'get_stats':
       return api.stats(args.tournament);
+    case 'get_annual_summary':
+      return api.annual({ year: args.year, from: args.from, to: args.to });
+    case 'list_teams':
+      return api.teams();
+    case 'get_team':
+      return api.team(String(args.name), { year: args.year, from: args.from, to: args.to });
     default:
       throw new Error(`unknown tool: ${name}`);
   }

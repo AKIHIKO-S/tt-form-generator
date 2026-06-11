@@ -79,6 +79,9 @@ export NODE_AUTH_TOKEN=$(gh auth token)
 npm install -g @kushiro-tt/cli
 kushiro-tt login
 kushiro-tt tournaments
+kushiro-tt annual --year 2025      # 年度の大会別・団体別集計
+kushiro-tt teams                   # 団体一覧
+kushiro-tt team 釧路第一中学校      # 特定団体の申込（全大会横断）
 ```
 MCP は AI ホストの設定に登録（`cli/mcp.example.json`）。
 
@@ -92,7 +95,13 @@ MCP は AI ホストの設定に登録（`cli/mcp.example.json`）。
 | GET | `/api/tournaments` | Access | 大会一覧（件数・合計） |
 | GET | `/api/submissions` | Access | 申込一覧（`?tournament=`） |
 | GET | `/api/submissions/:id` | Access | 申込詳細（明細つき） |
-| GET | `/api/stats` | Access | 集計（区分別内訳） |
+| GET | `/api/stats` | Access | 大会別集計（区分別内訳） |
+| GET | `/api/annual` | Access | 年間集計（`?year=`/`?from=&to=`、大会別・団体別） |
+| GET | `/api/teams` | Access | 団体一覧（件数・合計） |
+| GET | `/api/team` | Access | 団体別の申込（`?name=` 必須、期間絞り込み可） |
+
+`?year=2025` は年度（2025-04〜2026-03）。`from`/`to` 明示時はそれを優先、いずれも
+無ければ全期間。
 
 ## セキュリティ境界
 

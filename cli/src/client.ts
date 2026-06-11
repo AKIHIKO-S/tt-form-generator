@@ -50,4 +50,28 @@ export const api = {
     const qs = tournament ? `?tournament=${encodeURIComponent(tournament)}` : '';
     return call<{ stats: any }>(`/api/stats${qs}`).then((r) => r.stats);
   },
+  annual: (opts: PeriodOpts = {}) => {
+    const qs = periodQuery(opts).toString();
+    return call<{ stats: any }>(`/api/annual${qs ? `?${qs}` : ''}`).then((r) => r.stats);
+  },
+  teams: () => call<{ teams: any[] }>('/api/teams').then((r) => r.teams),
+  team: (name: string, opts: PeriodOpts = {}) => {
+    const q = periodQuery(opts);
+    q.set('name', name);
+    return call<{ team: any }>(`/api/team?${q.toString()}`).then((r) => r.team);
+  },
 };
+
+export interface PeriodOpts {
+  year?: number;
+  from?: string;
+  to?: string;
+}
+
+function periodQuery(opts: PeriodOpts): URLSearchParams {
+  const q = new URLSearchParams();
+  if (opts.year) q.set('year', String(opts.year));
+  if (opts.from) q.set('from', opts.from);
+  if (opts.to) q.set('to', opts.to);
+  return q;
+}

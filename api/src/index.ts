@@ -5,8 +5,21 @@ import {
   listSubmissions,
   getSubmission,
   getStats,
+  getAnnual,
+  listTeams,
+  getTeam,
   insertSubmission,
 } from './db';
+import { resolvePeriod } from './period';
+
+function periodFromQuery(c: { req: { query(k: string): string | undefined } }) {
+  const year = c.req.query('year');
+  return resolvePeriod({
+    year: year ? Number(year) : undefined,
+    from: c.req.query('from') || undefined,
+    to: c.req.query('to') || undefined,
+  });
+}
 
 export interface Env {
   DB: D1Database;
@@ -102,6 +115,23 @@ app.get('/api/submissions/:id', async (c) => {
 app.get('/api/stats', async (c) => {
   const tournamentId = c.req.query('tournament') || undefined;
   return c.json({ ok: true, stats: await getStats(c.env.DB, tournamentId) });
+});
+
+// 年間（期間）集計：大会別・団体別内訳。?year= または ?from=&to=
+app.get('/api/annual', async (c) => {
+  return c.json({ ok: true, stats: await getAnnual(c.env.DB, periodFromQuery(c)) });
+});
+
+// 団体一覧（discovery 用）
+app.get('/api/teams', async (c) => {
+  return c.json({ ok: true, teams: await listTeams(c.env.DB) });
+});
+
+// 特定団体の申込（全大会横断）。?name= 必須、?year=/?from=&to= で期間絞り込み可
+app.get('/api/team', async (c) => {
+  const name = c.req.query('name');
+  if (!name) return c.json({ ok: false, error: 'name is required' }, 400);
+  return c.json({ ok: true, team: await getTeam(c.env.DB, name, periodFromQuery(c)) });
 });
 
 // HMAC-SHA256 を timing-safe に検証（hex 署名）

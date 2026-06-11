@@ -1,5 +1,7 @@
 /** D1 アクセス層。参照系（役員/AI 向け）と取込系（Webhook）を分離する。 */
 
+import { periodClause, type Period } from './period';
+
 export interface SubmissionRow {
   id: number;
   tournament_id: string;
@@ -139,6 +141,89 @@ export async function getStats(db: D1Database, tournamentId?: string) {
     submissions: summary?.submissions ?? 0,
     total_fee: summary?.total_fee ?? 0,
     by_category: byCategory ?? [],
+  };
+}
+
+/** 年間（期間）集計：大会別・団体別の件数と参加料合計（役員の会計まとめ向け） */
+export async function getAnnual(db: D1Database, period: Period) {
+  const { sql, binds } = periodClause('submitted_at', period);
+  const where = sql ? `WHERE ${sql}` : '';
+
+  const totals = await db
+    .prepare(
+      `SELECT COUNT(*) AS submissions,
+              COALESCE(SUM(total),0) AS total_fee,
+              COUNT(DISTINCT team_name) AS teams
+         FROM submissions ${where}`,
+    )
+    .bind(...binds)
+    .first<{ submissions: number; total_fee: number; teams: number }>();
+
+  const { results: byTournament } = await db
+    .prepare(
+      `SELECT tournament_id, tournament_name,
+              COUNT(*) AS submissions, COALESCE(SUM(total),0) AS total_fee
+         FROM submissions ${where}
+        GROUP BY tournament_id, tournament_name
+        ORDER BY MAX(submitted_at) DESC`,
+    )
+    .bind(...binds)
+    .all<{ tournament_id: string; tournament_name: string; submissions: number; total_fee: number }>();
+
+  const { results: byTeam } = await db
+    .prepare(
+      `SELECT team_name, COUNT(*) AS submissions, COALESCE(SUM(total),0) AS total_fee
+         FROM submissions ${where}
+        GROUP BY team_name
+        ORDER BY total_fee DESC, team_name`,
+    )
+    .bind(...binds)
+    .all<{ team_name: string; submissions: number; total_fee: number }>();
+
+  return {
+    period,
+    totals: {
+      submissions: totals?.submissions ?? 0,
+      total_fee: totals?.total_fee ?? 0,
+      teams: totals?.teams ?? 0,
+    },
+    by_tournament: byTournament ?? [],
+    by_team: byTeam ?? [],
+  };
+}
+
+/** 団体一覧（discovery 用）。各団体の申込件数・合計参加料つき。 */
+export async function listTeams(db: D1Database) {
+  const { results } = await db
+    .prepare(
+      `SELECT team_name, COUNT(*) AS submissions, COALESCE(SUM(total),0) AS total_fee
+         FROM submissions
+        GROUP BY team_name
+        ORDER BY MAX(submitted_at) DESC`,
+    )
+    .all<{ team_name: string; submissions: number; total_fee: number }>();
+  return results ?? [];
+}
+
+/** 特定団体の申込を全大会横断で一覧（期間で絞り込み可）。 */
+export async function getTeam(db: D1Database, name: string, period: Period) {
+  const { sql, binds } = periodClause('submitted_at', period);
+  const where = sql ? `WHERE team_name = ? AND ${sql}` : `WHERE team_name = ?`;
+
+  const { results } = await db
+    .prepare(`SELECT * FROM submissions ${where} ORDER BY submitted_at DESC`)
+    .bind(name, ...binds)
+    .all<SubmissionRow>();
+
+  const submissions = (results ?? []).map(shapeSubmission);
+  return {
+    team_name: name,
+    period,
+    totals: {
+      submissions: submissions.length,
+      total_fee: submissions.reduce((s, r) => s + r.total, 0),
+    },
+    submissions,
   };
 }
 

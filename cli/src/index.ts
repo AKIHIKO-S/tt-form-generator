@@ -1,4 +1,4 @@
-import { api } from './client.js';
+import { api, type PeriodOpts } from './client.js';
 import { login } from './auth.js';
 import { runMcpServer } from './mcp.js';
 import { emit, fail, table, setJsonMode } from './output.js';
@@ -19,6 +19,11 @@ const HELP = `釧路卓球協会 内部データ CLI (kushiro-tt)
                                          申込一覧
   kushiro-tt submission <id>             申込1件の詳細（明細つき）
   kushiro-tt stats [--tournament <id>]   集計（区分別内訳）
+  kushiro-tt annual [--year <y>] [--from <d>] [--to <d>]
+                                         年間（期間）集計（大会別・団体別）
+  kushiro-tt teams                       団体一覧（件数・合計参加料）
+  kushiro-tt team <名称> [--year <y>] [--from <d>] [--to <d>]
+                                         特定団体の申込（全大会横断）
   kushiro-tt mcp                         MCP サーバとして起動（stdio）
 
 オプション:
@@ -44,6 +49,14 @@ function parseFlags(args: string[]) {
     } else positional.push(a);
   }
   return { flags, positional };
+}
+
+function periodOpts(flags: Record<string, string | boolean>): PeriodOpts {
+  return {
+    year: flags.year ? Number(flags.year) : undefined,
+    from: typeof flags.from === 'string' ? flags.from : undefined,
+    to: typeof flags.to === 'string' ? flags.to : undefined,
+  };
 }
 
 async function main() {
@@ -124,6 +137,40 @@ async function main() {
         emit(st, () => {
           const head = `対象: ${st.tournament_id || '全大会'}　申込 ${st.submissions} 件　合計 ¥${Number(st.total_fee).toLocaleString()}`;
           return head + '\n\n' + table(st.by_category, ['event_title', 'category', 'entries', 'fee']);
+        });
+        break;
+      }
+
+      case 'annual': {
+        const a = await api.annual(periodOpts(flags));
+        emit(a, () => {
+          const head = `期間: ${a.period.label}　申込 ${a.totals.submissions} 件　団体 ${a.totals.teams}　合計 ¥${Number(a.totals.total_fee).toLocaleString()}`;
+          return [
+            head,
+            '',
+            '■ 大会別',
+            table(a.by_tournament, ['tournament_id', 'tournament_name', 'submissions', 'total_fee']),
+            '',
+            '■ 団体別',
+            table(a.by_team, ['team_name', 'submissions', 'total_fee']),
+          ].join('\n');
+        });
+        break;
+      }
+
+      case 'teams': {
+        const t = await api.teams();
+        emit(t, () => table(t, ['team_name', 'submissions', 'total_fee']));
+        break;
+      }
+
+      case 'team': {
+        const name = positional[0];
+        if (!name) fail('団体名を指定してください: kushiro-tt team <名称>');
+        const tm = await api.team(name, periodOpts(flags));
+        emit(tm, () => {
+          const head = `団体: ${tm.team_name}　期間: ${tm.period.label}　申込 ${tm.totals.submissions} 件　合計 ¥${Number(tm.totals.total_fee).toLocaleString()}`;
+          return head + '\n\n' + table(tm.submissions, ['id', 'tournament_id', 'tournament_name', 'total', 'submitted_at']);
         });
         break;
       }
