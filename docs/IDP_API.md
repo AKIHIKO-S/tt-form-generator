@@ -69,6 +69,15 @@ npm run db:init && npm run db:seed
 DEV_BYPASS=true npm run dev              # Access 検証をバイパス（本番厳禁）
 ```
 
+クリック操作で体感できるデモ（ブラウザGUI）:
+```bash
+cd api && npm install
+npm run demo                            # D1リセット+投入 → DEV_BYPASSで起動
+# → ブラウザで http://localhost:8787 を開く
+```
+ダッシュボードは `DEV_BYPASS=true` のときだけ配信され、本番（Access内側）では出ない。
+「サンプル申込を追加」ボタンで取込をシミュレートでき、集計が動くのを確認できる。
+
 ### 3. CLI / MCP（`cli/`）
 ```bash
 cd cli

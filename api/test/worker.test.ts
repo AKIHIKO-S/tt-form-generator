@@ -125,3 +125,25 @@ describe('取込 /ingest（HMAC）', () => {
     expect(res.status).toBe(401);
   });
 });
+
+describe('デモ用ダッシュボード（DEV_BYPASS 限定）', () => {
+  it('DEV_BYPASS なら GET / で HTML を返す', async () => {
+    const res = await call('/', {}, DEV);
+    expect(res.status).toBe(200);
+    expect(res.headers.get('content-type') || '').toContain('text/html');
+    expect(await res.text()).toContain('釧路卓球協会');
+  });
+
+  it('DEV_BYPASS でなければ GET / は 404（本番では出さない）', async () => {
+    const res = await call('/'); // wrangler.toml の DEV_BYPASS="false"
+    expect(res.status).toBe(404);
+  });
+
+  it('POST /api/demo/seed でサンプルが1件増える', async () => {
+    const before = await (await call('/api/annual', {}, DEV)).json<any>();
+    const seed = await call('/api/demo/seed', { method: 'POST' }, DEV);
+    expect((await seed.json<any>()).ok).toBe(true);
+    const after = await (await call('/api/annual', {}, DEV)).json<any>();
+    expect(after.stats.totals.submissions).toBe(before.stats.totals.submissions + 1);
+  });
+});
