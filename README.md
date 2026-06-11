@@ -92,7 +92,8 @@ npm run preview    # ビルド結果をローカルで確認
 API を保護し、その認証を CLI と MCP で共有します。公開の申込フォームは従来どおり
 誰でも利用できます。
 
-詳細は [docs/IDP_API.md](docs/IDP_API.md) を参照。
+詳細は [docs/IDP_API.md](docs/IDP_API.md)、実環境への構築手順は
+[docs/DEPLOY.md](docs/DEPLOY.md) を参照。
 
 ## 📝 ライセンス
 

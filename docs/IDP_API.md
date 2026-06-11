@@ -44,6 +44,9 @@ CLI と MCP は認証・通信・データアクセスをすべて共有しま�
 
 ## セットアップ（概要）
 
+> 実環境への手順は [DEPLOY.md](DEPLOY.md) に詳述（カスタムドメイン・Access アプリ
+> 作成・Bypass ポリシー・動作確認まで）。以下は要点のみ。
+
 ### 1. Cloudflare Access
 - IdP（Google 等）を Zero Trust に連携（Gmail 個別アドレスの許可リストでも可）
 - Self-hosted Application を作成し、Workers の URL を保護対象に設定
