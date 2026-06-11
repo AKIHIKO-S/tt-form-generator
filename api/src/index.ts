@@ -11,6 +11,7 @@ import {
   insertSubmission,
 } from './db';
 import { resolvePeriod } from './period';
+import { verifyHmac } from './hmac';
 
 function periodFromQuery(c: { req: { query(k: string): string | undefined } }) {
   const year = c.req.query('year');
@@ -133,29 +134,5 @@ app.get('/api/team', async (c) => {
   if (!name) return c.json({ ok: false, error: 'name is required' }, 400);
   return c.json({ ok: true, team: await getTeam(c.env.DB, name, periodFromQuery(c)) });
 });
-
-// HMAC-SHA256 を timing-safe に検証（hex 署名）
-async function verifyHmac(secret: string, body: string, hexSig: string): Promise<boolean> {
-  const enc = new TextEncoder();
-  const key = await crypto.subtle.importKey(
-    'raw',
-    enc.encode(secret),
-    { name: 'HMAC', hash: 'SHA-256' },
-    false,
-    ['sign'],
-  );
-  const mac = await crypto.subtle.sign('HMAC', key, enc.encode(body));
-  const expected = [...new Uint8Array(mac)]
-    .map((b) => b.toString(16).padStart(2, '0'))
-    .join('');
-  return timingSafeEqual(expected, hexSig.trim().toLowerCase());
-}
-
-function timingSafeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let diff = 0;
-  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return diff === 0;
-}
 
 export default app;

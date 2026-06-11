@@ -1,6 +1,7 @@
 name = "tt-data-api"
 main = "src/index.ts"
 compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
 
 # ───────────────────────────────────────────────────────────
 # Cloudflare Access（IdP 認証）の検証用パラメータ

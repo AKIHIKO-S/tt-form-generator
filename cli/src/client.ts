@@ -68,7 +68,7 @@ export interface PeriodOpts {
   to?: string;
 }
 
-function periodQuery(opts: PeriodOpts): URLSearchParams {
+export function periodQuery(opts: PeriodOpts): URLSearchParams {
   const q = new URLSearchParams();
   if (opts.year) q.set('year', String(opts.year));
   if (opts.from) q.set('from', opts.from);
